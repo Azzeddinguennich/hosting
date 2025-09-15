@@ -165,7 +165,7 @@ form.addEventListener('submit', async function(e){
     }
   }catch(err){console.error('Error enviando webhook', err);}
 
-  const msg = encodeURIComponent(`Nuevo lead Kit Digital%0ANombre: ${data.name}%0ATel: ${data.phone}%0AEmpresa: ${data.company || '-'}%0ASector: ${data.sector || '-'}%0AUTM: ${data.utm_source || '-'} / ${data.utm_campaign || '-'}`);
+  const msg = encodeURIComponent(`Kit Digital Nombre: ${data.name} Tel: ${data.phone} Empresa: ${data.company || '-'} Sector: ${data.sector || '-'}`);
   window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
 
   document.body.innerHTML = `
