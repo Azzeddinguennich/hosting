@@ -164,6 +164,9 @@ updateCountdown();
 const form = document.getElementById('leadForm');
 form.addEventListener('submit', async function(e){
   e.preventDefault();
+  if(window.fbq){
+    fbq('track', 'Lead');
+  }
   const data = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
@@ -228,10 +231,24 @@ function escapeHtml(unsafe){
   }
 
   acceptBtn.addEventListener("click", function(){
-    localStorage.setItem("cookiesChoice","accepted");
-    banner.style.display = "none";
-    console.log("Cookies aceptadas ✅");
-  });
+  localStorage.setItem("cookiesChoice","accepted");
+  banner.style.display = "none";
+  console.log("Cookies aceptadas ✅");
+
+  // === Meta Pixel Code ===
+  !(function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)})(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1490078435562419'); 
+  fbq('track', 'PageView');
+  // === End Meta Pixel Code ===
+});
+
 
   declineBtn.addEventListener("click", function(){
     localStorage.setItem("cookiesChoice","declined");
