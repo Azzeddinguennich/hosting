@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kit Digital — Solicita tu gestión gratuita</title>
+<meta name="description" content="Solicita tu Kit Digital: hasta 12.000€ para digitalizar tu negocio. Gestión rápida y gratuita." />
+<style>
+  :root{--bg:#f7f9fc;--card:#fff;--accent:#0b5cff;--text:#111;--muted:#6b7280}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--text);background:var(--bg)}
+  .wrap{max-width:820px;margin:0 auto;padding:20px}
+  .hero{display:flex;gap:18px;align-items:flex-start}
+  .left{flex:1}
+  h1{font-size:22px;margin:0 0 8px;line-height:1.05}
+  p.lead{margin:0 0 12px;color:var(--muted)}
+  .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 30px rgba(12,20,40,0.06);width:340px;flex:0 0 340px}
+  .bullets{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+  .bullet{font-size:14px}
+  form{display:grid;gap:10px}
+  input,select{padding:12px;border-radius:8px;border:1px solid #e6eef8;font-size:15px}
+  button.cta{background:var(--accent);color:#fff;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px}
+  .small{font-size:13px;color:var(--muted)}
+  .trust{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .badge{background:#eef6ff;padding:6px 8px;border-radius:8px;font-size:12px;color:#0a58d6}
+  .countdown{font-weight:700;font-size:16px;color:#c53030;margin-top:8px}
+  .slots{font-weight:700;font-size:15px;color:#2b8a3e;margin-top:6px}
+  .whatsapp{display:inline-block;margin-top:12px;background:#25D366;color:#fff;padding:10px 14px;border-radius:999px;text-decoration:none;font-weight:700}
+  .footer{margin-top:18px;font-size:13px;color:var(--muted)}
+  @media(max-width:880px){.hero{flex-direction:column}.card{width:100%}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="left">
+        <h1>Consigue hasta <strong>12.000€</strong> con el Kit Digital — te lo gestionamos GRATIS</h1>
+        <p class="lead">Deja tu nombre y teléfono y te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la gestión.</p>
+
+        <div class="bullets">
+          <div class="bullet">✅ Dinero público para web, tienda, marketing y más</div>
+          <div class="bullet">✅ 100% sin coste para tu empresa (subvención oficial)</div>
+          <div class="bullet">✅ Tramitación completa por profesionales — sin papeleo para ti</div>
+        </div>
+
+        <div class="trust">
+          <div class="badge">Agente Digitalizador</div>
+          <div class="small">+ <strong id="clientsCount">200</strong> negocios gestionados</div>
+        </div>
+
+        <div class="countdown" id="countdownText">Oferta válida durante: --:--:--</div>
+        <div class="slots">Plazas disponibles: <span id="slotsCount">--</span></div>
+
+      </div>
+
+      <aside class="card">
+        <form id="leadForm">
+          <input type="text" name="name" id="name" placeholder="Nombre completo" required>
+          <input type="tel" name="phone" id="phone" placeholder="Teléfono (móvil)" required>
+          <input type="text" name="company" id="company" placeholder="Empresa (opcional)">
+          <select name="sector" id="sector">
+            <option value="">Sector</option>
+            <option>Comercio</option>
+            <option>Hostelería</option>
+            <option>Servicios</option>
+            <option>Industria</option>
+            <option>Otro</option>
+          </select>
+
+          <!-- UTM fields -->
+          <input type="hidden" name="utm_source" id="utm_source">
+          <input type="hidden" name="utm_medium" id="utm_medium">
+          <input type="hidden" name="utm_campaign" id="utm_campaign">
+
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="privacy" required>
+            <span class="small">Acepto la <a href="/politica-privacidad" target="_blank">política de privacidad</a></span>
+          </label>
+
+          <button class="cta" type="submit">QUIERO MI KIT DIGITAL</button>
+          <p class="small">También podemos escribirte por WhatsApp para acelerar el proceso.</p>
+        </form>
+
+        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+          <div>¿Prefieres llamar? <a href="tel:TU_TELEFONO">TU_TELEFONO</a></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      <p class="small">Aviso: la ayuda es una subvención pública sujeta a condiciones del programa Kit Digital. Esta página solo facilita la gestión. Para más información consulta nuestra política de privacidad.</p>
+    </div>
+  </div>
+
+  <!-- WhatsApp quick button (hidden until configured) -->
+  <a class="whatsapp" id="waButton" href="#" style="display:none" target="_blank">Enviar WhatsApp</a>
+
+<script>
+// === CONFIGURATION - replace these values ===
+const ADMIN_PHONE = 'ADMIN_PHONE'; // formato: 34611222333 (sin +). Sustituye por tu número
+const WEBHOOK_URL = 'WEBHOOK_URL'; // tu webhook (Zapier, Make, Formspree, endpoint propio)
+const DEFAULT_CLIENTS = 200; // número mostrado en trust badge
+// ============================================
+
+// Init trust count
+document.getElementById('clientsCount').textContent = DEFAULT_CLIENTS;
+
+// READ UTM
+const params = new URLSearchParams(window.location.search);
+document.getElementById('utm_source').value = params.get('utm_source') || '';
+document.getElementById('utm_medium').value = params.get('utm_medium') || '';
+document.getElementById('utm_campaign').value = params.get('utm_campaign') || '';
+
+// OFFER TIMER: create an offer expiry in localStorage (7 days from first visit)
+const OFFER_KEY = 'kd_offer_expires_v1';
+let expires = localStorage.getItem(OFFER_KEY);
+if(!expires){
+  const now = Date.now();
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  expires = now + sevenDays;
+  localStorage.setItem(OFFER_KEY, expires);
+}
+expires = parseInt(expires,10);
+
+function updateCountdown(){
+  const now = Date.now();
+  const diff = Math.max(0, expires - now);
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((diff % (1000*60)) / 1000);
+  document.getElementById('countdownText').textContent = `Oferta válida durante: ${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+
+  // Simple slots calculation: decrease as time passes
+  const totalHoursLeft = Math.ceil(diff / (1000*60*60));
+  const slots = Math.max(3, Math.min(50, Math.ceil(totalHoursLeft / 6)) ); // between 3 and 50
+  document.getElementById('slotsCount').textContent = slots;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Form handling
+const form = document.getElementById('leadForm');
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+  const data = {
+    name: document.getElementById('name').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    company: document.getElementById('company').value.trim(),
+    sector: document.getElementById('sector').value,
+    utm_source: document.getElementById('utm_source').value,
+    utm_medium: document.getElementById('utm_medium').value,
+    utm_campaign: document.getElementById('utm_campaign').value,
+    created_at: new Date().toISOString()
+  };
+
+  // Send to webhook
+  try{
+    if(WEBHOOK_URL && WEBHOOK_URL !== 'WEBHOOK_URL'){
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+    } else {
+      console.warn('WEBHOOK_URL no configurado - reemplaza en el HTML');
+    }
+  }catch(err){
+    console.error('Error enviando webhook', err);
+  }
+
+  // Open admin WhatsApp with prefilled message (so you get instant notice)
+  if(ADMIN_PHONE && ADMIN_PHONE !== 'ADMIN_PHONE'){
+    const msg = encodeURIComponent(`Nuevo lead Kit Digital%0ANombre: ${data.name}%0ATel: ${data.phone}%0AEmpresa: ${data.company || '-'}%0ASector: ${data.sector || '-'}%0AUTM: ${data.utm_source || '-'} / ${data.utm_campaign || '-'}`);
+    window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
+  }
+
+  // Show thank you message
+  document.body.innerHTML = `\n  <div style="padding:36px;max-width:760px;margin:0 auto;font-family:Inter,system-ui">\n    <h1>¡Gracias, ${escapeHtml(data.name || 'emprendedor')}!</h1>\n    <p>Hemos recibido tu solicitud. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la tramitación.</p>\n    <p>Si lo prefieres, mándanos un WhatsApp ahora:</p>\n    <p><a href="https://wa.me/${ADMIN_PHONE || ''}?text=${encodeURIComponent('Hola, quiero tramitar mi Kit Digital') }" style="background:#25D366;padding:12px 18px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700">Enviar WhatsApp</a></p>\n  </div>`;
+});
+
+function escapeHtml(unsafe){
+  return unsafe.replace(/&/g, '&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// WhatsApp quick button visibility (for manual contact)
+(function(){
+  const wa = document.getElementById('waButton');
+  if(ADMIN_PHONE && ADMIN_PHONE !== 'ADMIN_PHONE'){
+    wa.href = `https://wa.me/${ADMIN_PHONE}`;
+    wa.style.display = 'inline-block';
+  }
+})();
+
+/*
+  === TRACKING PLACEHOLDERS ===
+  - Reemplaza con tu Google Tag Manager / Pixel si quieres rastrear conversiones
+  - Ejemplo: insertar el script de GTM dentro del head y body según documentación de Google
+*/
+
+</script>
+</body>
+</html>
