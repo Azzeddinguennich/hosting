@@ -75,7 +75,7 @@
 
           <label style="display:flex;gap:8px;align-items:center">
             <input type="checkbox" id="privacy" required>
-            <span class="small">Acepto la <a href="/politica-privacidad.html" target="_blank">política de privacidad</a></span>
+            <span class="small">Acepto la <a href="/politica-privacidad" target="_blank">política de privacidad</a></span>
           </label>
 
           <button class="cta" type="submit">QUIERO MI KIT DIGITAL</button>
@@ -83,7 +83,7 @@
         </form>
 
         <div style="margin-top:12px;font-size:13px;color:var(--muted)">
-          <div>¿Prefieres llamar? <a href="tel:+34601082490">+34 601 08 24 90</a></div>
+          <div>¿Prefieres llamar? <a href="tel:TU_TELEFONO">TU_TELEFONO</a></div>
         </div>
       </aside>
     </div>
@@ -93,15 +93,15 @@
     </div>
   </div>
 
-  <!-- WhatsApp quick button -->
-  <a class="whatsapp" id="waButton" href="https://wa.me/34601082490" target="_blank">Enviar WhatsApp</a>
+  <!-- WhatsApp quick button (hidden until configured) -->
+  <a class="whatsapp" id="waButton" href="#" style="display:none" target="_blank">Enviar WhatsApp</a>
 
 <script>
-// === CONFIGURATION ===
-const ADMIN_PHONE = '34601082490'; 
-const WEBHOOK_URL = 'WEBHOOK_URL'; // reemplaza con tu webhook real (Zapier/Make/etc.)
-const DEFAULT_CLIENTS = 200;
-// =====================
+// === CONFIGURATION - replace these values ===
+const ADMIN_PHONE = 'ADMIN_PHONE'; // formato: 34611222333 (sin +). Sustituye por tu número
+const WEBHOOK_URL = 'WEBHOOK_URL'; // tu webhook (Zapier, Make, Formspree, endpoint propio)
+const DEFAULT_CLIENTS = 200; // número mostrado en trust badge
+// ============================================
 
 // Init trust count
 document.getElementById('clientsCount').textContent = DEFAULT_CLIENTS;
@@ -112,7 +112,7 @@ document.getElementById('utm_source').value = params.get('utm_source') || '';
 document.getElementById('utm_medium').value = params.get('utm_medium') || '';
 document.getElementById('utm_campaign').value = params.get('utm_campaign') || '';
 
-// OFFER TIMER
+// OFFER TIMER: create an offer expiry in localStorage (7 days from first visit)
 const OFFER_KEY = 'kd_offer_expires_v1';
 let expires = localStorage.getItem(OFFER_KEY);
 if(!expires){
@@ -130,11 +130,11 @@ function updateCountdown(){
   const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
   const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
   const seconds = Math.floor((diff % (1000*60)) / 1000);
-  document.getElementById('countdownText').textContent = 
-    `Oferta válida durante: ${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+  document.getElementById('countdownText').textContent = `Oferta válida durante: ${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
 
+  // Simple slots calculation: decrease as time passes
   const totalHoursLeft = Math.ceil(diff / (1000*60*60));
-  const slots = Math.max(3, Math.min(50, Math.ceil(totalHoursLeft / 6)) );
+  const slots = Math.max(3, Math.min(50, Math.ceil(totalHoursLeft / 6)) ); // between 3 and 50
   document.getElementById('slotsCount').textContent = slots;
 }
 setInterval(updateCountdown, 1000);
@@ -155,6 +155,7 @@ form.addEventListener('submit', async function(e){
     created_at: new Date().toISOString()
   };
 
+  // Send to webhook
   try{
     if(WEBHOOK_URL && WEBHOOK_URL !== 'WEBHOOK_URL'){
       await fetch(WEBHOOK_URL, {
@@ -162,64 +163,42 @@ form.addEventListener('submit', async function(e){
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
+    } else {
+      console.warn('WEBHOOK_URL no configurado - reemplaza en el HTML');
     }
-  }catch(err){console.error('Error enviando webhook', err);}
+  }catch(err){
+    console.error('Error enviando webhook', err);
+  }
 
-  const msg = encodeURIComponent(`Nuevo lead Kit Digital%0ANombre: ${data.name}%0ATel: ${data.phone}%0AEmpresa: ${data.company || '-'}%0ASector: ${data.sector || '-'}%0AUTM: ${data.utm_source || '-'} / ${data.utm_campaign || '-'}`);
-  window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
+  // Open admin WhatsApp with prefilled message (so you get instant notice)
+  if(ADMIN_PHONE && ADMIN_PHONE !== 'ADMIN_PHONE'){
+    const msg = encodeURIComponent(`Nuevo lead Kit Digital%0ANombre: ${data.name}%0ATel: ${data.phone}%0AEmpresa: ${data.company || '-'}%0ASector: ${data.sector || '-'}%0AUTM: ${data.utm_source || '-'} / ${data.utm_campaign || '-'}`);
+    window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
+  }
 
-  document.body.innerHTML = `
-  <div style="padding:36px;max-width:760px;margin:0 auto;font-family:Inter,system-ui">
-    <h1>¡Gracias, ${escapeHtml(data.name || 'emprendedor')}!</h1>
-    <p>Hemos recibido tu solicitud. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la tramitación.</p>
-    <p>Recuerda: la ayuda está exenta de IVA, por lo que no tendrás que adelantar ningún impuesto.</p>
-    <p>Si lo prefieres, mándanos un WhatsApp ahora:</p>
-    <p><a href="https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent('Hola, quiero tramitar mi Kit Digital')}" style="background:#25D366;padding:12px 18px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700">Enviar WhatsApp</a></p>
-  </div>`;
+  // Show thank you message
+  document.body.innerHTML = `\n  <div style="padding:36px;max-width:760px;margin:0 auto;font-family:Inter,system-ui">\n    <h1>¡Gracias, ${escapeHtml(data.name || 'emprendedor')}!</h1>\n    <p>Hemos recibido tu solicitud. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la tramitación.</p>\n    <p>Recuerda: la ayuda está exenta de IVA, por lo que no tendrás que adelantar ningún impuesto.</p>\n    <p>Si lo prefieres, mándanos un WhatsApp ahora:</p>\n    <p><a href="https://wa.me/${ADMIN_PHONE || ''}?text=${encodeURIComponent('Hola, quiero tramitar mi Kit Digital') }" style="background:#25D366;padding:12px 18px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700">Enviar WhatsApp</a></p>\n  </div>`;
 });
 
 function escapeHtml(unsafe){
   return unsafe.replace(/&/g, '&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');
 }
-</script>
 
-<!-- Cookie Banner -->
-<div id="cookie-banner" style="position:fixed;bottom:0;left:0;width:100%;background:#fff;box-shadow:0 -2px 6px rgba(0,0,0,0.15);padding:15px;z-index:9999;display:none;font-family:Arial,sans-serif;font-size:14px;line-height:1.4">
-  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
-    <div>
-      Usamos cookies propias y de terceros para mejorar la experiencia de usuario y mostrarte publicidad relevante. 
-      Al continuar, aceptas nuestra <a href="/cookies.html" target="_blank" style="color:#0b5cff;font-weight:bold">Política de Cookies</a>.
-    </div>
-    <div style="flex-shrink:0;display:flex;gap:8px">
-      <button id="cookie-accept" style="background:#0b5cff;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold">Aceptar</button>
-      <button id="cookie-decline" style="background:#eee;color:#333;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">Rechazar</button>
-    </div>
-  </div>
-</div>
-
-<script>
+// WhatsApp quick button visibility (for manual contact)
 (function(){
-  const banner = document.getElementById("cookie-banner");
-  const acceptBtn = document.getElementById("cookie-accept");
-  const declineBtn = document.getElementById("cookie-decline");
-
-  if(!localStorage.getItem("cookiesChoice")){
-    banner.style.display = "block";
+  const wa = document.getElementById('waButton');
+  if(ADMIN_PHONE && ADMIN_PHONE !== 'ADMIN_PHONE'){
+    wa.href = `https://wa.me/${ADMIN_PHONE}`;
+    wa.style.display = 'inline-block';
   }
-
-  acceptBtn.addEventListener("click", function(){
-    localStorage.setItem("cookiesChoice","accepted");
-    banner.style.display = "none";
-    console.log("Cookies aceptadas ✅");
-  });
-
-  declineBtn.addEventListener("click", function(){
-    localStorage.setItem("cookiesChoice","declined");
-    banner.style.display = "none";
-    console.log("Cookies rechazadas ❌");
-  });
 })();
-</script>
 
+/*
+  === TRACKING PLACEHOLDERS ===
+  - Reemplaza con tu Google Tag Manager / Pixel si quieres rastrear conversiones
+  - Ejemplo: insertar el script de GTM dentro del head y body según documentación de Google
+*/
+
+</script>
 </body>
 </html>
