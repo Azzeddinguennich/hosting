@@ -113,4 +113,200 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <aside class="card">
         <form id="leadForm" method="POST" action="https://formspree.io/f/tu-endpoint">
           <input type="text" name="name" id="name" placeholder="Nombre completo" required>
-          <input type
+          <input type="tel" name="phone" id="phone" placeholder="Teléfono (móvil)" required>
+
+          <!-- UTM fields -->
+          <input type="hidden" name="utm_source" id="utm_source">
+          <input type="hidden" name="utm_medium" id="utm_medium">
+          <input type="hidden" name="utm_campaign" id="utm_campaign">
+
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="privacy" required>
+            <span class="small">Acepto la <a href="/politica-privacidad.html" target="_blank">política de privacidad</a></span>
+          </label>
+
+          <button class="cta" type="submit">👉 QUIERO MI KIT DIGITAL</button>
+          <p class="small">También podemos escribirte por WhatsApp para acelerar el proceso.</p>
+        </form>
+
+        <div style="margin-top:12px;font-size:13px;color:#666">
+          <div>¿Prefieres llamar? <a href="tel:+34601082490">+34 601 08 24 90</a></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      <p class="small">Aviso: la ayuda es una subvención pública sujeta a condiciones del programa Kit Digital. Está exenta de IVA según normativa, por lo que no tendrás que asumir ningún coste adicional. Esta página solo facilita la gestión. Para más información consulta nuestra política de privacidad.</p>
+    </div>
+  </div>
+
+  <!-- WhatsApp quick button -->
+  <a class="whatsapp" id="waButton" href="https://wa.me/34601082490" target="_blank">Enviar WhatsApp</a>
+
+<script>
+// === CONFIGURATION ===
+const ADMIN_PHONE = '34601082490';
+const WEBHOOK_URL = 'https://hook.eu2.make.com/m3iy4rjqv0lllp15fxb4yjogoyxhdu2o'; // tu webhook Make/Zapier
+const DEFAULT_CLIENTS = 200;
+// =====================
+
+// Init trust count
+document.getElementById('clientsCount').textContent = DEFAULT_CLIENTS;
+
+// READ UTM (con defensas)
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const setVal = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.value = v || '';
+  };
+  setVal('utm_source',  params.get('utm_source'));
+  setVal('utm_medium',  params.get('utm_medium'));
+  setVal('utm_campaign',params.get('utm_campaign'));
+})();
+
+// OFFER TIMER
+const OFFER_KEY = 'kd_offer_expires_v1';
+let expires = localStorage.getItem(OFFER_KEY);
+if(!expires){
+  const now = Date.now();
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  expires = now + sevenDays;
+  localStorage.setItem(OFFER_KEY, expires);
+}
+expires = parseInt(expires,10);
+
+function updateCountdown(){
+  const now = Date.now();
+  const diff = Math.max(0, expires - now);
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((diff % (1000*60)) / 1000);
+  document.getElementById('countdownText').textContent =
+    `Oferta válida durante: ${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+
+  const totalHoursLeft = Math.ceil(diff / (1000*60*60));
+  const slots = Math.max(3, Math.min(50, Math.ceil(totalHoursLeft / 6)) );
+  document.getElementById('slotsCount').textContent = slots;
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// --- handler de envío: SOLO name + phone (+ UTM) ---
+document.addEventListener('DOMContentLoaded', function () {
+  const form   = document.getElementById('leadForm');
+  const nameEl = document.getElementById('name');
+  const phoneEl= document.getElementById('phone');
+  if (!form) return;
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Evento Lead Meta si está cargado
+    if (window.fbq) { fbq('track', 'Lead'); }
+
+    const utm_source   = (document.getElementById('utm_source')   || {}).value || '';
+    const utm_medium   = (document.getElementById('utm_medium')   || {}).value || '';
+    const utm_campaign = (document.getElementById('utm_campaign') || {}).value || '';
+
+    const data = {
+      name:  (nameEl  && nameEl.value  || '').trim(),
+      phone: (phoneEl && phoneEl.value || '').trim(),
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      created_at: new Date().toISOString()
+    };
+
+    // Enviar a webhook (Make/Zapier)
+    try{
+      if(WEBHOOK_URL && WEBHOOK_URL !== 'WEBHOOK_URL'){
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        });
+      }
+    }catch(err){console.error('Error enviando webhook', err);}
+
+    // Aviso por WhatsApp al admin
+    if (ADMIN_PHONE) {
+      const msg = encodeURIComponent(
+        `Kit Digital\nNombre: ${data.name || '-'}\nTel: ${data.phone || '-'}\nUTM: ${utm_source || '-'} / ${utm_campaign || '-'}`
+      );
+      window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
+    }
+
+    // Pantalla de gracias
+    document.body.innerHTML = `
+      <div style="padding:36px;max-width:760px;margin:0 auto;font-family:Inter,system-ui">
+        <h1>¡Gracias, ${(data.name || 'emprendedor').replace(/[&<>\"']/g,'')}!</h1>
+        <p>Hemos recibido tu solicitud. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la tramitación.</p>
+        <p>Recuerda: la ayuda está <strong>exenta de IVA</strong>, no tendrás que adelantar ningún impuesto.</p>
+        <p><a href="https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent('Hola, quiero tramitar mi Kit Digital')}"
+              style="background:#25D366;padding:12px 18px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700">
+              Enviar WhatsApp
+           </a></p>
+      </div>`;
+  });
+});
+
+function escapeHtml(unsafe){
+  return unsafe.replace(/&/g, '&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');
+}
+</script>
+
+<!-- Cookie Banner -->
+<div id="cookie-banner" style="position:fixed;bottom:0;left:0;width:100%;background:#fff;box-shadow:0 -2px 6px rgba(0,0,0,0.15);padding:15px;z-index:9999;display:none;font-family:Arial,sans-serif;font-size:14px;line-height:1.4">
+  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+    <div>
+      Usamos cookies propias y de terceros para mejorar la experiencia de usuario y mostrarte publicidad relevante. 
+      Al continuar, aceptas nuestra <a href="/cookies.html" target="_blank" style="color:#0b5cff;font-weight:bold">Política de Cookies</a>.
+    </div>
+    <div style="flex-shrink:0;display:flex;gap:8px">
+      <button id="cookie-accept" style="background:#0b5cff;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold">Aceptar</button>
+      <button id="cookie-decline" style="background:#eee;color:#333;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">Rechazar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const banner = document.getElementById("cookie-banner");
+  const acceptBtn = document.getElementById("cookie-accept");
+  const declineBtn = document.getElementById("cookie-decline");
+
+  if(!localStorage.getItem("cookiesChoice")){
+    banner.style.display = "block";
+  }
+
+  acceptBtn.addEventListener("click", function(){
+    localStorage.setItem("cookiesChoice","accepted");
+    banner.style.display = "none";
+    console.log("Cookies aceptadas ✅");
+
+    // === Meta Pixel Code ===
+    !(function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)})(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1490078435562419'); 
+    fbq('track', 'PageView');
+    // === End Meta Pixel Code ===
+  });
+
+  declineBtn.addEventListener("click", function(){
+    localStorage.setItem("cookiesChoice","declined");
+    banner.style.display = "none";
+    console.log("Cookies rechazadas ❌");
+  });
+})();
+</script>
+
+</body>
+</html>
