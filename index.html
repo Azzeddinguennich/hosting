@@ -75,24 +75,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <aside class="card">
-        <form id="leadForm">
-          <input type="text" name="name" id="name" placeholder="Nombre completo" required>
-          <input type="tel" name="phone" id="phone" placeholder="Teléfono (móvil)" required>
-          
+        <form id="leadForm" method="POST" action="https://formspree.io/f/tu-endpoint">
+  <input type="text" name="name" id="name" placeholder="Nombre completo" required>
+  
+  <input type="tel" name="phone" id="phone" placeholder="Teléfono (móvil)" required>
+  
+  <!-- UTM fields -->
+  <input type="hidden" name="utm_source" id="utm_source">
+  <input type="hidden" name="utm_medium" id="utm_medium">
+  <input type="hidden" name="utm_campaign" id="utm_campaign">
+  
+  <label style="display:flex;gap:8px;align-items:center">
+    <input type="checkbox" id="privacy" required>
+    <span class="small">Acepto la <a href="/politica-privacidad.html" target="_blank">política de privacidad</a></span>
+  </label>
+  
+  <button class="cta" type="submit">👉 QUIERO MI KIT DIGITAL</button>
+  <p class="small">También podemos escribirte por WhatsApp para acelerar el proceso.</p>
+</form>
 
-          <!-- UTM fields -->
-          <input type="hidden" name="utm_source" id="utm_source">
-          <input type="hidden" name="utm_medium" id="utm_medium">
-          <input type="hidden" name="utm_campaign" id="utm_campaign">
-
-          <label style="display:flex;gap:8px;align-items:center">
-            <input type="checkbox" id="privacy" required>
-            <span class="small">Acepto la <a href="/politica-privacidad.html" target="_blank">política de privacidad</a></span>
-          </label>
-
-          <button class="cta" type="submit">QUIERO MI KIT DIGITAL</button>
-          <p class="small">También podemos escribirte por WhatsApp para acelerar el proceso.</p>
-        </form>
 
         <div style="margin-top:12px;font-size:13px;color:var(--muted)">
           <div>¿Prefieres llamar? <a href="tel:+34601082490">+34 601 08 24 90</a></div>
