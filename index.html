@@ -7,7 +7,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'AW-17574033258');
 </script>
   <!-- Google Tag Manager -->
@@ -35,14 +34,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .bullet{font-size:14px}
   form{display:grid;gap:10px}
   input,select{padding:12px;border-radius:8px;border:1px solid #e6eef8;font-size:15px}
-  button.cta{background:var(--accent);color:#fff;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px}
+  button.cta{background:var(--accent);color:#fff;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px;cursor:pointer}
   .small{font-size:13px;color:var(--muted)}
   .trust{display:flex;gap:8px;align-items:center;margin-top:10px}
   .badge{background:#eef6ff;padding:6px 8px;border-radius:8px;font-size:12px;color:#0a58d6}
   .countdown{font-weight:700;font-size:16px;color:#c53030;margin-top:8px}
   .slots{font-weight:700;font-size:15px;color:#2b8a3e;margin-top:6px}
   .whatsapp{display:inline-block;margin-top:12px;background:#25D366;color:#fff;padding:10px 14px;border-radius:999px;text-decoration:none;font-weight:700}
-  .footer{margin-top:18px;font-size:13px;color:var(--muted)}
+  .footer{margin-top:18px;font-size:13px;color:#666}
+  .faq{margin-top:24px}
+  .faq details{background:#fff;border:1px solid #e6eef8;border-radius:10px;padding:12px;margin-bottom:10px}
+  .faq summary{font-weight:700;cursor:pointer}
+  .sources{margin-top:10px;font-size:12px;color:#555}
+  .sources a{color:#0b5cff;text-decoration:none}
   @media(max-width:880px){.hero{flex-direction:column}.card{width:100%}}
 </style>
 </head>
@@ -51,6 +55,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5PKKWPWV"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+
   <div class="wrap">
     <div class="hero">
       <div class="left">
@@ -60,7 +65,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="bullets">
           <div class="bullet">✅ Dinero público para web, tienda, marketing y más</div>
           <div class="bullet">✅ 100% sin coste para tu empresa (subvención oficial)</div>
-          <div class="bullet">✅ La ayuda está exenta de IVA: no tendrás que adelantar ni pagar impuestos por ella</div>
+          <div class="bullet">✅ La ayuda está <strong>exenta de IVA</strong>: no tendrás que adelantar ni pagar impuestos por ella</div>
           <div class="bullet">✅ Tramitación completa por profesionales — sin papeleo para ti</div>
         </div>
 
@@ -72,184 +77,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="countdown" id="countdownText">Oferta válida durante: --:--:--</div>
         <div class="slots">Plazas disponibles: <span id="slotsCount">--</span></div>
 
+        <!-- FAQ -->
+        <div class="faq">
+          <details>
+            <summary>¿Tengo que pagar algo o adelantar el IVA?</summary>
+            <div class="small">No. La ayuda está <strong>exenta de IVA</strong> y nosotros gestionamos todo sin coste para ti.</div>
+          </details>
+          <details>
+            <summary>¿Es oficial de la UE y el Gobierno de España?</summary>
+            <div class="small">Sí. Forma parte de los fondos de la <strong>Unión Europea</strong> y el plan de recuperación de España para digitalizar pymes y autónomos.</div>
+          </details>
+          <details>
+            <summary>¿Qué necesito para empezar?</summary>
+            <div class="small">Solo tu <strong>nombre y teléfono</strong>. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y comenzar la tramitación.</div>
+          </details>
+          <details>
+            <summary>¿De verdad compensa digitalizar mi negocio?</summary>
+            <div class="small">Los datos muestran que la adopción digital en pymes mejora la productividad y el rendimiento económico en el medio plazo. Mira las fuentes abajo.</div>
+          </details>
+        </div>
+
+        <!-- Datos y fuentes -->
+        <div class="sources">
+          <p><strong>Datos que respaldan la digitalización:</strong></p>
+          <ul>
+            <li>La digitalización mejora la productividad de las empresas en el medio plazo (estudio del BCE sobre la zona euro). <a href="https://www.ecb.europa.eu/pub/pdf/scpops/ecb.op339~f67b6981a9.en.pdf" target="_blank" rel="noopener">Ver informe</a></li>
+            <li>Las pymes que se digitalizan muestran mejor rendimiento financiero (investigación 2024 en pymes europeas). <a href="https://www.sciencedirect.com/science/article/abs/pii/S154461232400878X" target="_blank" rel="noopener">Ver estudio</a></li>
+            <li>La OCDE destaca que digitalizar pymes impulsa productividad e innovación. <a href="https://www.oecd.org/en/topics/sub-issues/digitalisation-of-smes.html" target="_blank" rel="noopener">Ver síntesis</a></li>
+            <li>La Comisión Europea subraya la prioridad de digitalizar pymes en España (Digital Decade 2025). <a href="https://digital-strategy.ec.europa.eu/en/factpages/spain-2025-digital-decade-country-report" target="_blank" rel="noopener">Ver ficha país</a></li>
+          </ul>
+        </div>
+
       </div>
 
       <aside class="card">
         <form id="leadForm" method="POST" action="https://formspree.io/f/tu-endpoint">
-  <input type="text" name="name" id="name" placeholder="Nombre completo" required>
-  
-  <input type="tel" name="phone" id="phone" placeholder="Teléfono (móvil)" required>
-  
-  <!-- UTM fields -->
-  <input type="hidden" name="utm_source" id="utm_source">
-  <input type="hidden" name="utm_medium" id="utm_medium">
-  <input type="hidden" name="utm_campaign" id="utm_campaign">
-  
-  <label style="display:flex;gap:8px;align-items:center">
-    <input type="checkbox" id="privacy" required>
-    <span class="small">Acepto la <a href="/politica-privacidad.html" target="_blank">política de privacidad</a></span>
-  </label>
-  
-  <button class="cta" type="submit">👉 QUIERO MI KIT DIGITAL</button>
-  <p class="small">También podemos escribirte por WhatsApp para acelerar el proceso.</p>
-</form>
-
-
-        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
-          <div>¿Prefieres llamar? <a href="tel:+34601082490">+34 601 08 24 90</a></div>
-        </div>
-      </aside>
-    </div>
-
-    <div class="footer">
-      <p class="small">Aviso: la ayuda es una subvención pública sujeta a condiciones del programa Kit Digital. Está exenta de IVA según normativa, por lo que no tendrás que asumir ningún coste adicional. Esta página solo facilita la gestión. Para más información consulta nuestra política de privacidad.</p>
-    </div>
-  </div>
-
-  <!-- WhatsApp quick button -->
-  <a class="whatsapp" id="waButton" href="https://wa.me/34601082490" target="_blank">Enviar WhatsApp</a>
-
-<script>
-// === CONFIGURATION ===
-const ADMIN_PHONE = '34601082490'; 
-const WEBHOOK_URL = 'https://hook.eu2.make.com/m3iy4rjqv0lllp15fxb4yjogoyxhdu2o'; // reemplaza con tu webhook real (Zapier/Make/etc.)
-const DEFAULT_CLIENTS = 200;
-// =====================
-
-// Init trust count
-document.getElementById('clientsCount').textContent = DEFAULT_CLIENTS;
-
-// READ UTM
-const params = new URLSearchParams(window.location.search);
-document.getElementById('utm_source').value = params.get('utm_source') || '';
-document.getElementById('utm_medium').value = params.get('utm_medium') || '';
-document.getElementById('utm_campaign').value = params.get('utm_campaign') || '';
-
-// OFFER TIMER
-const OFFER_KEY = 'kd_offer_expires_v1';
-let expires = localStorage.getItem(OFFER_KEY);
-if(!expires){
-  const now = Date.now();
-  const sevenDays = 7 * 24 * 60 * 60 * 1000;
-  expires = now + sevenDays;
-  localStorage.setItem(OFFER_KEY, expires);
-}
-expires = parseInt(expires,10);
-
-function updateCountdown(){
-  const now = Date.now();
-  const diff = Math.max(0, expires - now);
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-  const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-  const seconds = Math.floor((diff % (1000*60)) / 1000);
-  document.getElementById('countdownText').textContent = 
-    `Oferta válida durante: ${String(days).padStart(2,'0')}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
-
-  const totalHoursLeft = Math.ceil(diff / (1000*60*60));
-  const slots = Math.max(3, Math.min(50, Math.ceil(totalHoursLeft / 6)) );
-  document.getElementById('slotsCount').textContent = slots;
-}
-setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// Form handling
-const form = document.getElementById('leadForm');
-form.addEventListener('submit', async function(e){
-  e.preventDefault();
-  if(window.fbq){
-    fbq('track', 'Lead');
-  }
-  const data = {
-    name: document.getElementById('name').value.trim(),
-    phone: document.getElementById('phone').value.trim(),
-    company: document.getElementById('company').value.trim(),
-    sector: document.getElementById('sector').value,
-    utm_source: document.getElementById('utm_source').value,
-    utm_medium: document.getElementById('utm_medium').value,
-    utm_campaign: document.getElementById('utm_campaign').value,
-    created_at: new Date().toISOString()
-  };
-
-  try{
-    if(WEBHOOK_URL && WEBHOOK_URL !== 'WEBHOOK_URL'){
-      await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(data)
-      });
-    }
-  }catch(err){console.error('Error enviando webhook', err);}
-
-  const msg = encodeURIComponent(`Kit Digital Nombre: ${data.name} Tel: ${data.phone} Empresa: ${data.company || '-'} Sector: ${data.sector || '-'}`);
-  window.open(`https://wa.me/${ADMIN_PHONE}?text=${msg}`,'_blank');
-
-  document.body.innerHTML = `
-  <div style="padding:36px;max-width:760px;margin:0 auto;font-family:Inter,system-ui">
-    <h1>¡Gracias, ${escapeHtml(data.name || 'emprendedor')}!</h1>
-    <p>Hemos recibido tu solicitud. Te llamamos en menos de 10 minutos para comprobar tu elegibilidad y empezar la tramitación.</p>
-    <p>Recuerda: la ayuda está exenta de IVA, por lo que no tendrás que adelantar ningún impuesto.</p>
-    <p>Si lo prefieres, mándanos un WhatsApp ahora:</p>
-    <p><a href="https://wa.me/${ADMIN_PHONE}?text=${encodeURIComponent('Hola, quiero tramitar mi Kit Digital')}" style="background:#25D366;padding:12px 18px;border-radius:8px;color:#fff;text-decoration:none;font-weight:700">Enviar WhatsApp</a></p>
-  </div>`;
-});
-
-function escapeHtml(unsafe){
-  return unsafe.replace(/&/g, '&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');
-}
-</script>
-
-<!-- Cookie Banner -->
-<div id="cookie-banner" style="position:fixed;bottom:0;left:0;width:100%;background:#fff;box-shadow:0 -2px 6px rgba(0,0,0,0.15);padding:15px;z-index:9999;display:none;font-family:Arial,sans-serif;font-size:14px;line-height:1.4">
-  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
-    <div>
-      Usamos cookies propias y de terceros para mejorar la experiencia de usuario y mostrarte publicidad relevante. 
-      Al continuar, aceptas nuestra <a href="/cookies.html" target="_blank" style="color:#0b5cff;font-weight:bold">Política de Cookies</a>.
-    </div>
-    <div style="flex-shrink:0;display:flex;gap:8px">
-      <button id="cookie-accept" style="background:#0b5cff;color:#fff;border:0;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold">Aceptar</button>
-      <button id="cookie-decline" style="background:#eee;color:#333;border:0;padding:8px 14px;border-radius:6px;cursor:pointer">Rechazar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const banner = document.getElementById("cookie-banner");
-  const acceptBtn = document.getElementById("cookie-accept");
-  const declineBtn = document.getElementById("cookie-decline");
-
-  if(!localStorage.getItem("cookiesChoice")){
-    banner.style.display = "block";
-  }
-
-  acceptBtn.addEventListener("click", function(){
-  localStorage.setItem("cookiesChoice","accepted");
-  banner.style.display = "none";
-  console.log("Cookies aceptadas ✅");
-
-  // === Meta Pixel Code ===
-  !(function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)})(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1490078435562419'); 
-  fbq('track', 'PageView');
-  // === End Meta Pixel Code ===
-});
-
-
-  declineBtn.addEventListener("click", function(){
-    localStorage.setItem("cookiesChoice","declined");
-    banner.style.display = "none";
-    console.log("Cookies rechazadas ❌");
-  });
-})();
-</script>
-
-</body>
-</html>
+          <input type="text" name="name" id="name" placeholder="Nombre completo" required>
+          <input type
